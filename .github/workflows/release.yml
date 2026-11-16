@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version: '1.26.x'
+
+      - name: Check version.go matches tag
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          ver=$(grep -E 'const Version =' version.go | sed -E 's/.*"([^"]+)".*/\1/')
+          test "$tag" = "$ver"
+
+      - name: Test
+        run: go test -race ./...
+
+      - name: Build binaries
+        run: |
+          mkdir -p dist
+          for pair in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64; do
+            os=${pair%/*}
+            arch=${pair#*/}
+            out="dist/errpath-${os}-${arch}"
+            GOOS=$os GOARCH=$arch go build -o "$out" ./cmd/errpath
+            tar -czf "dist/errpath-${os}-${arch}.tar.gz" -C dist "errpath-${os}-${arch}"
+            rm "$out"
+          done
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.tar.gz
+          generate_release_notes: true

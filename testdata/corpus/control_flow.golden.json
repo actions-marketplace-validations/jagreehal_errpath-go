@@ -1,0 +1,1566 @@
+{
+  "report": {
+    "schema_version": 1,
+    "coverage": {
+      "functions": 26,
+      "steps": 19,
+      "error_from_callee": 8,
+      "error_from_enclosing": 0,
+      "error_unknown": 11,
+      "unanalysed": 0
+    },
+    "functions": [
+      {
+        "id": "corpus.fetch",
+        "name": "fetch",
+        "file": "control_flow.go",
+        "line": 21,
+        "returns": {
+          "kind": "result",
+          "error": "FetchError"
+        },
+        "nodes": [
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "id"
+        ]
+      },
+      {
+        "id": "corpus.store",
+        "name": "store",
+        "file": "control_flow.go",
+        "line": 23,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "v"
+        ]
+      },
+      {
+        "id": "corpus.MustLoad",
+        "name": "MustLoad",
+        "file": "control_flow.go",
+        "line": 25,
+        "returns": {
+          "kind": "other"
+        },
+        "nodes": [
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "path"
+        ]
+      },
+      {
+        "id": "corpus.linear",
+        "name": "linear",
+        "file": "control_flow.go",
+        "line": 35,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "step",
+            "name": "fetch",
+            "error": "FetchError",
+            "source": "callee",
+            "line": 36
+          },
+          {
+            "kind": "step",
+            "name": "store",
+            "error": "error",
+            "source": "unknown",
+            "conversions": [
+              "wrap"
+            ],
+            "line": 40
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "id",
+          "v",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.branches",
+        "name": "branches",
+        "file": "control_flow.go",
+        "line": 46,
+        "returns": {
+          "kind": "result",
+          "error": "ErrNotFound | FetchError"
+        },
+        "nodes": [
+          {
+            "kind": "branch",
+            "label": "if retry",
+            "arms": [
+              {
+                "label": "yes",
+                "body": [
+                  {
+                    "kind": "step",
+                    "name": "fetch",
+                    "error": "FetchError",
+                    "source": "callee",
+                    "conversions": [
+                      "ErrNotFound"
+                    ],
+                    "line": 48
+                  },
+                  {
+                    "kind": "succeed"
+                  }
+                ]
+              },
+              {
+                "label": "no",
+                "body": [
+                  {
+                    "kind": "branch",
+                    "label": "if id == 0",
+                    "arms": [
+                      {
+                        "label": "yes",
+                        "body": [
+                          {
+                            "kind": "fail",
+                            "error": "FetchError",
+                            "line": 54
+                          }
+                        ]
+                      },
+                      {
+                        "label": "no",
+                        "body": null
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "id",
+          "retry",
+          "v",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.switches",
+        "name": "switches",
+        "file": "control_flow.go",
+        "line": 59,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "branch",
+            "label": "switch kind",
+            "arms": [
+              {
+                "label": "\"a\"",
+                "body": [
+                  {
+                    "kind": "step",
+                    "name": "store",
+                    "error": "error",
+                    "source": "unknown",
+                    "line": 62
+                  },
+                  {
+                    "kind": "succeed"
+                  }
+                ]
+              },
+              {
+                "label": "\"b\"",
+                "body": [
+                  {
+                    "kind": "jump",
+                    "name": "fallthrough",
+                    "line": 64
+                  }
+                ]
+              },
+              {
+                "label": "\"c\"",
+                "body": [
+                  {
+                    "kind": "panic",
+                    "name": "panic",
+                    "line": 66,
+                    "terminal": true,
+                    "how": "panic",
+                    "confidence": "certain"
+                  }
+                ]
+              },
+              {
+                "label": "default",
+                "body": null
+              }
+            ]
+          },
+          {
+            "kind": "branch",
+            "label": "switch v.(type)",
+            "arms": [
+              {
+                "label": "int",
+                "body": [
+                  {
+                    "kind": "succeed"
+                  }
+                ]
+              },
+              {
+                "label": "default",
+                "body": null
+              }
+            ]
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "kind",
+          "v"
+        ]
+      },
+      {
+        "id": "corpus.loops",
+        "name": "loops",
+        "file": "control_flow.go",
+        "line": 76,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "label",
+            "name": "outer",
+            "line": 78
+          },
+          {
+            "kind": "loop",
+            "label": "outer: for range ids",
+            "body": [
+              {
+                "kind": "loop",
+                "label": "for i \u003c id",
+                "body": [
+                  {
+                    "kind": "branch",
+                    "label": "if stop",
+                    "arms": [
+                      {
+                        "label": "yes",
+                        "body": [
+                          {
+                            "kind": "jump",
+                            "name": "break outer",
+                            "line": 82
+                          }
+                        ]
+                      },
+                      {
+                        "label": "no",
+                        "body": null
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "branch",
+                    "label": "if i == 2",
+                    "arms": [
+                      {
+                        "label": "yes",
+                        "body": [
+                          {
+                            "kind": "jump",
+                            "name": "continue",
+                            "line": 85
+                          }
+                        ]
+                      },
+                      {
+                        "label": "no",
+                        "body": null
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "step",
+                    "name": "fetch",
+                    "error": "FetchError",
+                    "source": "callee",
+                    "line": 87
+                  }
+                ],
+                "can_skip": true
+              }
+            ],
+            "can_skip": true
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "ids",
+          "stop",
+          "total",
+          "id",
+          "i",
+          "v",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.silent",
+        "name": "silent",
+        "file": "control_flow.go",
+        "line": 97,
+        "returns": {
+          "kind": "other"
+        },
+        "nodes": [
+          {
+            "kind": "swallow",
+            "name": "store",
+            "line": 98,
+            "how": "_ =",
+            "confidence": "certain"
+          },
+          {
+            "kind": "swallow",
+            "name": "fetch",
+            "line": 99,
+            "how": "_",
+            "confidence": "certain"
+          },
+          {
+            "kind": "swallow",
+            "name": "store",
+            "line": 100,
+            "how": "discarded return",
+            "confidence": "certain"
+          },
+          {
+            "kind": "swallow",
+            "name": "store",
+            "line": 102,
+            "allowed": "best effort",
+            "how": "_ =",
+            "confidence": "certain"
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "id",
+          "v"
+        ]
+      },
+      {
+        "id": "corpus.panics",
+        "name": "panics",
+        "file": "control_flow.go",
+        "line": 105,
+        "returns": {
+          "kind": "other"
+        },
+        "nodes": [
+          {
+            "kind": "panic",
+            "name": "MustLoad",
+            "line": 106,
+            "how": "panic",
+            "confidence": "possible"
+          },
+          {
+            "kind": "branch",
+            "label": "if cfg == 0",
+            "arms": [
+              {
+                "label": "yes",
+                "body": [
+                  {
+                    "kind": "panic",
+                    "name": "log.Fatalf",
+                    "line": 108,
+                    "terminal": true,
+                    "how": "exit",
+                    "confidence": "certain"
+                  }
+                ]
+              },
+              {
+                "label": "no",
+                "body": null
+              }
+            ]
+          },
+          {
+            "kind": "branch",
+            "label": "if cfg \u003c 0",
+            "arms": [
+              {
+                "label": "yes",
+                "body": [
+                  {
+                    "kind": "panic",
+                    "name": "os.Exit",
+                    "line": 111,
+                    "terminal": true,
+                    "how": "exit",
+                    "confidence": "certain"
+                  }
+                ]
+              },
+              {
+                "label": "no",
+                "body": null
+              }
+            ]
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "path",
+          "cfg"
+        ]
+      },
+      {
+        "id": "corpus.closures",
+        "name": "closures",
+        "file": "control_flow.go",
+        "line": 116,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "loop",
+            "label": "for range ids",
+            "body": [
+              {
+                "kind": "step",
+                "name": "each",
+                "error": "error",
+                "source": "unknown",
+                "line": 124
+              }
+            ],
+            "can_skip": true
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "ids",
+          "each",
+          "id",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.closures.each",
+        "name": "closures.each",
+        "file": "control_flow.go",
+        "line": 117,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "step",
+            "name": "fetch",
+            "error": "FetchError",
+            "source": "callee",
+            "line": 118
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "id",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.closures.go1",
+        "name": "closures.go1",
+        "file": "control_flow.go",
+        "line": 128,
+        "returns": {
+          "kind": "other"
+        },
+        "nodes": [
+          {
+            "kind": "panic",
+            "name": "panic",
+            "line": 129,
+            "terminal": true,
+            "how": "panic",
+            "confidence": "certain"
+          }
+        ]
+      },
+      {
+        "id": "corpus.recovery",
+        "name": "recovery",
+        "file": "control_flow.go",
+        "line": 134,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "recover",
+            "name": "recover",
+            "line": 135,
+            "how": "defer recover"
+          },
+          {
+            "kind": "branch",
+            "label": "if errors.Is()",
+            "arms": [
+              {
+                "label": "yes",
+                "body": [
+                  {
+                    "kind": "succeed"
+                  }
+                ]
+              },
+              {
+                "label": "no",
+                "body": null
+              }
+            ]
+          },
+          {
+            "kind": "step",
+            "name": "fetch",
+            "error": "FetchError",
+            "source": "callee",
+            "line": 140
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "id",
+          "err",
+          "v"
+        ]
+      },
+      {
+        "id": "corpus.recovery.defer1",
+        "name": "recovery.defer1",
+        "file": "control_flow.go",
+        "line": 135,
+        "returns": {
+          "kind": "other"
+        },
+        "nodes": [
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "r"
+        ]
+      },
+      {
+        "id": "corpus.handled",
+        "name": "handled",
+        "file": "control_flow.go",
+        "line": 152,
+        "returns": {
+          "kind": "other"
+        },
+        "nodes": [
+          {
+            "kind": "loop",
+            "label": "for range ids",
+            "body": [
+              {
+                "kind": "recover",
+                "name": "fetch",
+                "line": 155,
+                "untraced": true,
+                "how": "if err != nil",
+                "confidence": "certain"
+              },
+              {
+                "kind": "branch",
+                "label": "if err != nil",
+                "arms": [
+                  {
+                    "label": "yes",
+                    "body": [
+                      {
+                        "kind": "jump",
+                        "name": "continue",
+                        "line": 158
+                      }
+                    ]
+                  },
+                  {
+                    "label": "no",
+                    "body": null
+                  }
+                ]
+              }
+            ],
+            "can_skip": true
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "ids",
+          "n",
+          "id",
+          "v",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.Service.Put",
+        "name": "Put",
+        "file": "control_flow.go",
+        "line": 165,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "step",
+            "name": "repo.Save",
+            "error": "error",
+            "source": "unknown",
+            "line": 166
+          },
+          {
+            "kind": "swallow",
+            "name": "repo.Save",
+            "line": 169,
+            "how": "discarded return",
+            "confidence": "certain"
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "s",
+          "v",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.selects",
+        "name": "selects",
+        "file": "control_flow.go",
+        "line": 173,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "loop",
+            "label": "for",
+            "body": [
+              {
+                "kind": "branch",
+                "label": "select",
+                "arms": [
+                  {
+                    "label": "\u003c-done",
+                    "body": [
+                      {
+                        "kind": "succeed"
+                      }
+                    ]
+                  },
+                  {
+                    "label": "\u003c-in",
+                    "body": [
+                      {
+                        "kind": "step",
+                        "name": "store",
+                        "error": "error",
+                        "source": "unknown",
+                        "line": 179
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "locals": [
+          "done",
+          "in",
+          "v",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.gotos",
+        "name": "gotos",
+        "file": "control_flow.go",
+        "line": 186,
+        "returns": {
+          "kind": "result",
+          "error": "ErrNotFound"
+        },
+        "nodes": [
+          {
+            "kind": "label",
+            "name": "again",
+            "line": 187
+          },
+          {
+            "kind": "branch",
+            "label": "if n \u003e 0",
+            "arms": [
+              {
+                "label": "yes",
+                "body": [
+                  {
+                    "kind": "jump",
+                    "name": "goto again",
+                    "line": 190
+                  }
+                ]
+              },
+              {
+                "label": "no",
+                "body": null
+              }
+            ]
+          },
+          {
+            "kind": "branch",
+            "label": "if n \u003c 0",
+            "arms": [
+              {
+                "label": "yes",
+                "body": [
+                  {
+                    "kind": "jump",
+                    "name": "goto fail",
+                    "line": 193
+                  }
+                ]
+              },
+              {
+                "label": "no",
+                "body": null
+              }
+            ]
+          },
+          {
+            "kind": "succeed"
+          },
+          {
+            "kind": "label",
+            "name": "fail",
+            "line": 196
+          },
+          {
+            "kind": "fail",
+            "error": "ErrNotFound",
+            "line": 197
+          }
+        ],
+        "locals": [
+          "n"
+        ]
+      },
+      {
+        "id": "corpus.elses",
+        "name": "elses",
+        "file": "control_flow.go",
+        "line": 200,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "branch",
+            "label": "if fast",
+            "arms": [
+              {
+                "label": "yes",
+                "body": [
+                  {
+                    "kind": "succeed"
+                  }
+                ]
+              },
+              {
+                "label": "no",
+                "body": [
+                  {
+                    "kind": "step",
+                    "name": "fetch",
+                    "error": "FetchError",
+                    "source": "callee",
+                    "line": 204
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "branch",
+            "label": "if id \u003e 10",
+            "arms": [
+              {
+                "label": "yes",
+                "body": [
+                  {
+                    "kind": "panic",
+                    "name": "panic",
+                    "line": 211,
+                    "terminal": true,
+                    "how": "panic",
+                    "confidence": "certain"
+                  }
+                ]
+              },
+              {
+                "label": "no",
+                "body": null
+              }
+            ]
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "id",
+          "fast",
+          "v",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.labels",
+        "name": "labels",
+        "file": "control_flow.go",
+        "line": 218,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "label",
+            "name": "rows",
+            "line": 219
+          },
+          {
+            "kind": "loop",
+            "label": "rows: for range rows",
+            "body": [
+              {
+                "kind": "loop",
+                "label": "for range row",
+                "body": [
+                  {
+                    "kind": "branch",
+                    "label": "if v \u003c 0",
+                    "arms": [
+                      {
+                        "label": "yes",
+                        "body": [
+                          {
+                            "kind": "jump",
+                            "name": "continue rows",
+                            "line": 223
+                          }
+                        ]
+                      },
+                      {
+                        "label": "no",
+                        "body": null
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "branch",
+                    "label": "if v == 0",
+                    "arms": [
+                      {
+                        "label": "yes",
+                        "body": [
+                          {
+                            "kind": "jump",
+                            "name": "break rows",
+                            "line": 226
+                          }
+                        ]
+                      },
+                      {
+                        "label": "no",
+                        "body": null
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "step",
+                    "name": "store",
+                    "error": "error",
+                    "source": "unknown",
+                    "line": 228
+                  }
+                ],
+                "can_skip": true
+              }
+            ],
+            "can_skip": true
+          },
+          {
+            "kind": "label",
+            "name": "wait",
+            "line": 233
+          },
+          {
+            "kind": "loop",
+            "label": "wait: for",
+            "body": [
+              {
+                "kind": "branch",
+                "label": "select",
+                "arms": [
+                  {
+                    "label": "\u003c-done",
+                    "body": [
+                      {
+                        "kind": "jump",
+                        "name": "break wait",
+                        "line": 237
+                      }
+                    ]
+                  },
+                  {
+                    "label": "\u003c-in",
+                    "body": [
+                      {
+                        "kind": "branch",
+                        "label": "if v \u003c 0",
+                        "arms": [
+                          {
+                            "label": "yes",
+                            "body": [
+                              {
+                                "kind": "jump",
+                                "name": "continue",
+                                "line": 240
+                              }
+                            ]
+                          },
+                          {
+                            "label": "no",
+                            "body": null
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "step",
+                        "name": "store",
+                        "error": "error",
+                        "source": "unknown",
+                        "line": 242
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "label",
+            "name": "scan",
+            "line": 247
+          },
+          {
+            "kind": "loop",
+            "label": "scan: for i \u003c 3",
+            "body": [
+              {
+                "kind": "branch",
+                "label": "switch i",
+                "arms": [
+                  {
+                    "label": "0",
+                    "body": [
+                      {
+                        "kind": "jump",
+                        "name": "continue scan",
+                        "line": 251
+                      }
+                    ]
+                  },
+                  {
+                    "label": "1",
+                    "body": [
+                      {
+                        "kind": "jump",
+                        "name": "break",
+                        "line": 253
+                      }
+                    ]
+                  },
+                  {
+                    "label": "2",
+                    "body": [
+                      {
+                        "kind": "jump",
+                        "name": "break scan",
+                        "line": 255
+                      }
+                    ]
+                  },
+                  {
+                    "label": "default",
+                    "body": null
+                  }
+                ]
+              },
+              {
+                "kind": "step",
+                "name": "store",
+                "error": "error",
+                "source": "unknown",
+                "line": 257
+              }
+            ],
+            "can_skip": true
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "rows",
+          "done",
+          "in",
+          "row",
+          "v",
+          "err",
+          "i"
+        ]
+      },
+      {
+        "id": "corpus.innermost",
+        "name": "innermost",
+        "file": "control_flow.go",
+        "line": 265,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "label",
+            "name": "each",
+            "line": 266
+          },
+          {
+            "kind": "loop",
+            "label": "each: for range ids",
+            "body": [
+              {
+                "kind": "branch",
+                "label": "if id \u003c 0",
+                "arms": [
+                  {
+                    "label": "yes",
+                    "body": [
+                      {
+                        "kind": "jump",
+                        "name": "continue each",
+                        "line": 269
+                      }
+                    ]
+                  },
+                  {
+                    "label": "no",
+                    "body": null
+                  }
+                ]
+              },
+              {
+                "kind": "branch",
+                "label": "if id == 0",
+                "arms": [
+                  {
+                    "label": "yes",
+                    "body": [
+                      {
+                        "kind": "jump",
+                        "name": "break each",
+                        "line": 272
+                      }
+                    ]
+                  },
+                  {
+                    "label": "no",
+                    "body": null
+                  }
+                ]
+              },
+              {
+                "kind": "step",
+                "name": "store",
+                "error": "error",
+                "source": "unknown",
+                "line": 274
+              }
+            ],
+            "can_skip": true
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "ids",
+          "id",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.drain",
+        "name": "drain",
+        "file": "control_flow.go",
+        "line": 282,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "loop",
+            "label": "for",
+            "body": [
+              {
+                "kind": "branch",
+                "label": "select",
+                "arms": [
+                  {
+                    "label": "\u003c-in",
+                    "body": [
+                      {
+                        "kind": "branch",
+                        "label": "if v == 0",
+                        "arms": [
+                          {
+                            "label": "yes",
+                            "body": [
+                              {
+                                "kind": "succeed"
+                              }
+                            ]
+                          },
+                          {
+                            "label": "no",
+                            "body": null
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "step",
+                        "name": "store",
+                        "error": "error",
+                        "source": "unknown",
+                        "line": 289
+                      }
+                    ]
+                  },
+                  {
+                    "label": "default",
+                    "body": [
+                      {
+                        "kind": "jump",
+                        "name": "break",
+                        "line": 293
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "locals": [
+          "in",
+          "v",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.polls",
+        "name": "polls",
+        "file": "control_flow.go",
+        "line": 299,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "loop",
+            "label": "for MustLoad() \u003e n",
+            "can_skip": true,
+            "head": [
+              {
+                "kind": "panic",
+                "name": "MustLoad",
+                "line": 301,
+                "how": "panic",
+                "confidence": "possible"
+              }
+            ]
+          },
+          {
+            "kind": "loop",
+            "label": "for MustLoad() \u003e i",
+            "body": [
+              {
+                "kind": "step",
+                "name": "store",
+                "error": "error",
+                "source": "unknown",
+                "line": 305
+              }
+            ],
+            "can_skip": true,
+            "head": [
+              {
+                "kind": "panic",
+                "name": "MustLoad",
+                "line": 304,
+                "how": "panic",
+                "confidence": "possible"
+              }
+            ]
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "path",
+          "n",
+          "i",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.passthrough",
+        "name": "passthrough",
+        "file": "control_flow.go",
+        "line": 312,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "step",
+            "name": "fetch",
+            "error": "FetchError",
+            "source": "callee",
+            "line": 314
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "id",
+          "v",
+          "err"
+        ]
+      },
+      {
+        "id": "corpus.forwarded",
+        "name": "forwarded",
+        "file": "control_flow.go",
+        "line": 317,
+        "returns": {
+          "kind": "result",
+          "error": "error"
+        },
+        "nodes": [
+          {
+            "kind": "step",
+            "name": "fetch",
+            "error": "FetchError",
+            "source": "callee",
+            "line": 318
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "id"
+        ]
+      },
+      {
+        "id": "corpus.observed",
+        "name": "observed",
+        "file": "control_flow.go",
+        "line": 322,
+        "returns": {
+          "kind": "other"
+        },
+        "nodes": [
+          {
+            "kind": "loop",
+            "label": "for range ids",
+            "body": [
+              {
+                "kind": "recover",
+                "name": "fetch",
+                "line": 325,
+                "how": "if err != nil"
+              },
+              {
+                "kind": "branch",
+                "label": "if err != nil",
+                "arms": [
+                  {
+                    "label": "yes",
+                    "body": [
+                      {
+                        "kind": "jump",
+                        "name": "continue",
+                        "line": 328
+                      }
+                    ]
+                  },
+                  {
+                    "label": "no",
+                    "body": null
+                  }
+                ]
+              }
+            ],
+            "can_skip": true
+          },
+          {
+            "kind": "succeed"
+          }
+        ],
+        "locals": [
+          "ctx",
+          "ids",
+          "n",
+          "id",
+          "v",
+          "err"
+        ]
+      }
+    ],
+    "findings": [
+      {
+        "rule": "no-panic",
+        "file": "control_flow.go",
+        "line": 66,
+        "message": "`panic` can panic",
+        "confidence": "certain",
+        "function": "corpus.switches"
+      },
+      {
+        "rule": "no-swallow",
+        "file": "control_flow.go",
+        "line": 98,
+        "message": "`_ =` drops the error from `store`",
+        "confidence": "certain",
+        "function": "corpus.silent"
+      },
+      {
+        "rule": "no-swallow",
+        "file": "control_flow.go",
+        "line": 99,
+        "message": "`_` drops the error from `fetch`",
+        "confidence": "certain",
+        "function": "corpus.silent"
+      },
+      {
+        "rule": "no-swallow",
+        "file": "control_flow.go",
+        "line": 100,
+        "message": "`discarded return` drops the error from `store`",
+        "confidence": "certain",
+        "function": "corpus.silent"
+      },
+      {
+        "rule": "no-swallow",
+        "file": "control_flow.go",
+        "line": 102,
+        "message": "`_ =` drops the error from `store`",
+        "confidence": "certain",
+        "function": "corpus.silent",
+        "allowed": "best effort"
+      },
+      {
+        "rule": "no-panic",
+        "file": "control_flow.go",
+        "line": 106,
+        "message": "`MustLoad` can panic",
+        "confidence": "possible",
+        "function": "corpus.panics"
+      },
+      {
+        "rule": "no-panic",
+        "file": "control_flow.go",
+        "line": 108,
+        "message": "`log.Fatalf` exits the process",
+        "confidence": "certain",
+        "function": "corpus.panics"
+      },
+      {
+        "rule": "no-panic",
+        "file": "control_flow.go",
+        "line": 111,
+        "message": "`os.Exit` exits the process",
+        "confidence": "certain",
+        "function": "corpus.panics"
+      },
+      {
+        "rule": "no-panic",
+        "file": "control_flow.go",
+        "line": 129,
+        "message": "`panic` can panic",
+        "confidence": "certain",
+        "function": "corpus.closures.go1"
+      },
+      {
+        "rule": "no-trace",
+        "file": "control_flow.go",
+        "line": 155,
+        "message": "the error from `fetch` is handled here, and nothing records it",
+        "confidence": "certain",
+        "function": "corpus.handled"
+      },
+      {
+        "rule": "no-swallow",
+        "file": "control_flow.go",
+        "line": 169,
+        "message": "`discarded return` drops the error from `repo.Save`",
+        "confidence": "certain",
+        "function": "corpus.Service.Put"
+      },
+      {
+        "rule": "no-panic",
+        "file": "control_flow.go",
+        "line": 211,
+        "message": "`panic` can panic",
+        "confidence": "certain",
+        "function": "corpus.elses"
+      },
+      {
+        "rule": "no-panic",
+        "file": "control_flow.go",
+        "line": 301,
+        "message": "`MustLoad` can panic",
+        "confidence": "possible",
+        "function": "corpus.polls"
+      },
+      {
+        "rule": "no-panic",
+        "file": "control_flow.go",
+        "line": 304,
+        "message": "`MustLoad` can panic",
+        "confidence": "possible",
+        "function": "corpus.polls"
+      }
+    ],
+    "parse_failures": [],
+    "unanalysed": [],
+    "support_files_skipped": 0
+  },
+  "diagrams": {
+    "corpus.MustLoad": "flowchart LR\n  Start([\"MustLoad\"])\n  Done((Success))\n  Start --\u003e Done",
+    "corpus.Service.Put": "flowchart LR\n  Start([\"Put\"])\n  Done((Success))\n  W1[\"swallow repo.Save\"]\n  W1 --\u003e Done\n  S2[\"repo.Save\"]\n  S2 --\u003e|ok| W1\n  E3[/\"error\"/]\n  S2 --\u003e|err| E3\n  Start --\u003e S2\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E3 error",
+    "corpus.branches": "flowchart LR\n  Start([\"branches\"])\n  Done((Success))\n  D1{\"if retry\"}\n  D2{\"if id == 0\"}\n  E3[/\"FetchError\"/]\n  D2 --\u003e|yes| E3\n  D2 --\u003e|no| Done\n  S4[\"fetch\"]\n  S4 --\u003e|ok| Done\n  E5[/\"ErrNotFound\"/]\n  S4 --\u003e|err| E5\n  D1 --\u003e|yes| S4\n  D1 --\u003e|no| D2\n  Start --\u003e D1\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E3,E5 error",
+    "corpus.closures": "flowchart LR\n  Start([\"closures\"])\n  Done((Success))\n  L1[\"for range ids\"]\n  S2[\"each\"]\n  S2 --\u003e|ok| L1\n  E3[/\"error\"/]\n  S2 --\u003e|err| E3\n  L1 --\u003e|next| S2\n  L1 --\u003e|done| Done\n  Start --\u003e L1\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E3 error",
+    "corpus.closures.each": "flowchart LR\n  Start([\"closures.each\"])\n  Done((Success))\n  S1[\"fetch\"]\n  S1 --\u003e|ok| Done\n  E2[/\"FetchError\"/]\n  S1 --\u003e|err| E2\n  Start --\u003e S1\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E2 error",
+    "corpus.closures.go1": "flowchart LR\n  Start([\"closures.go1\"])\n  Done((Success))\n  P1[\"panic\"]\n  E2[/\"Panic\"/]\n  P1 --\u003e|panic| E2\n  Start --\u003e P1\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E2 error",
+    "corpus.drain": "flowchart LR\n  Start([\"drain\"])\n  Done((Success))\n  L1[\"for\"]\n  D2{\"select\"}\n  J3[\"break\"]\n  J3 --\u003e L1\n  S4[\"store\"]\n  S4 --\u003e|ok| L1\n  E5[/\"error\"/]\n  S4 --\u003e|err| E5\n  D6{\"if v == 0\"}\n  D6 --\u003e|yes| Done\n  D6 --\u003e|no| S4\n  D2 --\u003e|\"#lt;-in\"| D6\n  D2 --\u003e|default| J3\n  L1 --\u003e|next| D2\n  Start --\u003e L1\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E5 error",
+    "corpus.elses": "flowchart LR\n  Start([\"elses\"])\n  Done((Success))\n  D1{\"if id #gt; 10\"}\n  P2[\"panic\"]\n  E3[/\"Panic\"/]\n  P2 --\u003e|panic| E3\n  D1 --\u003e|yes| P2\n  D1 --\u003e|no| Done\n  D4{\"if fast\"}\n  S5[\"fetch\"]\n  S5 --\u003e|ok| D1\n  E6[/\"FetchError\"/]\n  S5 --\u003e|err| E6\n  D4 --\u003e|yes| Done\n  D4 --\u003e|no| S5\n  Start --\u003e D4\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E3,E6 error",
+    "corpus.fetch": "flowchart LR\n  Start([\"fetch\"])\n  Done((Success))\n  Start --\u003e Done",
+    "corpus.forwarded": "flowchart LR\n  Start([\"forwarded\"])\n  Done((Success))\n  S1[\"fetch\"]\n  S1 --\u003e|ok| Done\n  E2[/\"FetchError\"/]\n  S1 --\u003e|err| E2\n  Start --\u003e S1\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E2 error",
+    "corpus.gotos": "flowchart LR\n  Start([\"gotos\"])\n  Done((Success))\n  E1[/\"ErrNotFound\"/]\n  D2{\"if n #lt; 0\"}\n  J3[\"goto fail\"]\n  D2 --\u003e|yes| J3\n  D2 --\u003e|no| Done\n  D4{\"if n #gt; 0\"}\n  J5[\"goto again\"]\n  D4 --\u003e|yes| J5\n  D4 --\u003e|no| D2\n  Start --\u003e D4\n  J3 --\u003e E1\n  J5 --\u003e D4\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E1 error",
+    "corpus.handled": "flowchart LR\n  Start([\"handled\"])\n  Done((Success))\n  L1[\"for range ids\"]\n  D2{\"if err != nil\"}\n  J3[\"continue\"]\n  J3 --\u003e L1\n  D2 --\u003e|yes| J3\n  D2 --\u003e|no| L1\n  R4[\"recover if err != nil\"]\n  R4 --\u003e D2\n  L1 --\u003e|next| R4\n  L1 --\u003e|done| Done\n  Start --\u003e L1",
+    "corpus.innermost": "flowchart LR\n  Start([\"innermost\"])\n  Done((Success))\n  L1[\"each: for range ids\"]\n  S2[\"store\"]\n  S2 --\u003e|ok| L1\n  E3[/\"error\"/]\n  S2 --\u003e|err| E3\n  D4{\"if id == 0\"}\n  J5[\"break each\"]\n  J5 --\u003e Done\n  D4 --\u003e|yes| J5\n  D4 --\u003e|no| S2\n  D6{\"if id #lt; 0\"}\n  J7[\"continue each\"]\n  J7 --\u003e L1\n  D6 --\u003e|yes| J7\n  D6 --\u003e|no| D4\n  L1 --\u003e|next| D6\n  L1 --\u003e|done| Done\n  Start --\u003e L1\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E3 error",
+    "corpus.labels": "flowchart LR\n  Start([\"labels\"])\n  Done((Success))\n  L1[\"scan: for i #lt; 3\"]\n  S2[\"store\"]\n  S2 --\u003e|ok| L1\n  E3[/\"error\"/]\n  S2 --\u003e|err| E3\n  D4{\"switch i\"}\n  J5[\"break scan\"]\n  J5 --\u003e Done\n  J6[\"break\"]\n  J6 --\u003e S2\n  J7[\"continue scan\"]\n  J7 --\u003e L1\n  D4 --\u003e|0| J7\n  D4 --\u003e|1| J6\n  D4 --\u003e|2| J5\n  D4 --\u003e|default| S2\n  L1 --\u003e|next| D4\n  L1 --\u003e|done| Done\n  L8[\"wait: for\"]\n  D9{\"select\"}\n  S10[\"store\"]\n  S10 --\u003e|ok| L8\n  S10 --\u003e|err| E3\n  D11{\"if v #lt; 0\"}\n  J12[\"continue\"]\n  J12 --\u003e L8\n  D11 --\u003e|yes| J12\n  D11 --\u003e|no| S10\n  J13[\"break wait\"]\n  J13 --\u003e L1\n  D9 --\u003e|\"#lt;-done\"| J13\n  D9 --\u003e|\"#lt;-in\"| D11\n  L8 --\u003e|next| D9\n  L8 --\u003e|done| L1\n  L14[\"rows: for range rows\"]\n  L15[\"for range row\"]\n  S16[\"store\"]\n  S16 --\u003e|ok| L15\n  S16 --\u003e|err| E3\n  D17{\"if v == 0\"}\n  J18[\"break rows\"]\n  J18 --\u003e L8\n  D17 --\u003e|yes| J18\n  D17 --\u003e|no| S16\n  D19{\"if v #lt; 0\"}\n  J20[\"continue rows\"]\n  J20 --\u003e L14\n  D19 --\u003e|yes| J20\n  D19 --\u003e|no| D17\n  L15 --\u003e|next| D19\n  L15 --\u003e|done| L14\n  L14 --\u003e|next| L15\n  L14 --\u003e|done| L8\n  Start --\u003e L14\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E3 error",
+    "corpus.linear": "flowchart LR\n  Start([\"linear\"])\n  Done((Success))\n  S1[\"store\"]\n  S1 --\u003e|ok| Done\n  E2[/\"error\"/]\n  S1 --\u003e|err| E2\n  S3[\"fetch\"]\n  S3 --\u003e|ok| S1\n  E4[/\"FetchError\"/]\n  S3 --\u003e|err| E4\n  Start --\u003e S3\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E2,E4 error",
+    "corpus.loops": "flowchart LR\n  Start([\"loops\"])\n  Done((Success))\n  L1[\"outer: for range ids\"]\n  L2[\"for i #lt; id\"]\n  S3[\"fetch\"]\n  S3 --\u003e|ok| L2\n  E4[/\"FetchError\"/]\n  S3 --\u003e|err| E4\n  D5{\"if i == 2\"}\n  J6[\"continue\"]\n  J6 --\u003e L2\n  D5 --\u003e|yes| J6\n  D5 --\u003e|no| S3\n  D7{\"if stop\"}\n  J8[\"break outer\"]\n  J8 --\u003e Done\n  D7 --\u003e|yes| J8\n  D7 --\u003e|no| D5\n  L2 --\u003e|next| D7\n  L2 --\u003e|done| L1\n  L1 --\u003e|next| L2\n  L1 --\u003e|done| Done\n  Start --\u003e L1\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E4 error",
+    "corpus.observed": "flowchart LR\n  Start([\"observed\"])\n  Done((Success))\n  L1[\"for range ids\"]\n  D2{\"if err != nil\"}\n  J3[\"continue\"]\n  J3 --\u003e L1\n  D2 --\u003e|yes| J3\n  D2 --\u003e|no| L1\n  R4[\"recover if err != nil\"]\n  R4 --\u003e D2\n  L1 --\u003e|next| R4\n  L1 --\u003e|done| Done\n  Start --\u003e L1",
+    "corpus.panics": "flowchart LR\n  Start([\"panics\"])\n  Done((Success))\n  D1{\"if cfg #lt; 0\"}\n  P2[\"os.Exit\"]\n  E3[/\"Exit\"/]\n  P2 --\u003e|exit| E3\n  D1 --\u003e|yes| P2\n  D1 --\u003e|no| Done\n  D4{\"if cfg == 0\"}\n  P5[\"log.Fatalf\"]\n  P5 --\u003e|exit| E3\n  D4 --\u003e|yes| P5\n  D4 --\u003e|no| D1\n  P6[\"MustLoad\"]\n  P6 --\u003e|ok| D4\n  E7[/\"Panic\"/]\n  P6 --\u003e|panic| E7\n  Start --\u003e P6\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E3,E7 error",
+    "corpus.passthrough": "flowchart LR\n  Start([\"passthrough\"])\n  Done((Success))\n  S1[\"fetch\"]\n  S1 --\u003e|ok| Done\n  E2[/\"FetchError\"/]\n  S1 --\u003e|err| E2\n  Start --\u003e S1\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E2 error",
+    "corpus.polls": "flowchart LR\n  Start([\"polls\"])\n  Done((Success))\n  L1[\"for MustLoad() #gt; i\"]\n  P2[\"MustLoad\"]\n  P2 --\u003e|ok| L1\n  E3[/\"Panic\"/]\n  P2 --\u003e|panic| E3\n  S4[\"store\"]\n  S4 --\u003e|ok| P2\n  E5[/\"error\"/]\n  S4 --\u003e|err| E5\n  L1 --\u003e|next| S4\n  L1 --\u003e|done| Done\n  L6[\"for MustLoad() #gt; n\"]\n  P7[\"MustLoad\"]\n  P7 --\u003e|ok| L6\n  P7 --\u003e|panic| E3\n  L6 --\u003e|next| P7\n  L6 --\u003e|done| P2\n  Start --\u003e P7\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E3,E5 error",
+    "corpus.recovery": "flowchart LR\n  Start([\"recovery\"])\n  Done((Success))\n  S1[\"fetch\"]\n  S1 --\u003e|ok| Done\n  E2[/\"FetchError\"/]\n  S1 --\u003e|err| E2\n  D3{\"if errors.Is()\"}\n  D3 --\u003e|yes| Done\n  D3 --\u003e|no| S1\n  R4[\"recover defer recover\"]\n  R4 --\u003e D3\n  Start --\u003e R4\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E2 error",
+    "corpus.recovery.defer1": "flowchart LR\n  Start([\"recovery.defer1\"])\n  Done((Success))\n  Start --\u003e Done",
+    "corpus.selects": "flowchart LR\n  Start([\"selects\"])\n  Done((Success))\n  L1[\"for\"]\n  D2{\"select\"}\n  S3[\"store\"]\n  S3 --\u003e|ok| L1\n  E4[/\"error\"/]\n  S3 --\u003e|err| E4\n  D2 --\u003e|\"#lt;-done\"| Done\n  D2 --\u003e|\"#lt;-in\"| S3\n  L1 --\u003e|next| D2\n  Start --\u003e L1\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E4 error",
+    "corpus.silent": "flowchart LR\n  Start([\"silent\"])\n  Done((Success))\n  W1[\"swallow store\"]\n  W1 --\u003e Done\n  W2[\"swallow store\"]\n  W2 --\u003e W1\n  W3[\"swallow fetch\"]\n  W3 --\u003e W2\n  W4[\"swallow store\"]\n  W4 --\u003e W3\n  Start --\u003e W4",
+    "corpus.store": "flowchart LR\n  Start([\"store\"])\n  Done((Success))\n  Start --\u003e Done",
+    "corpus.switches": "flowchart LR\n  Start([\"switches\"])\n  Done((Success))\n  D1{\"switch v.(type)\"}\n  D1 --\u003e|int| Done\n  D1 --\u003e|default| Done\n  D2{\"switch kind\"}\n  P3[\"panic\"]\n  E4[/\"Panic\"/]\n  P3 --\u003e|panic| E4\n  J5[\"fallthrough\"]\n  J5 --\u003e P3\n  S6[\"store\"]\n  S6 --\u003e|ok| Done\n  E7[/\"error\"/]\n  S6 --\u003e|err| E7\n  D2 --\u003e|\"#quot;a#quot;\"| S6\n  D2 --\u003e|\"#quot;b#quot;\"| J5\n  D2 --\u003e|\"#quot;c#quot;\"| P3\n  D2 --\u003e|default| D1\n  Start --\u003e D2\n  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e\n  class E4,E7 error"
+  }
+}

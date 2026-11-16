@@ -1,0 +1,33 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+bin/
+
+# Coverage
+coverage.out
+coverage.html
+*.coverprofile
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Local
+.env
+.env.*
+.local/
+vendor/
+go.work
+go.work.sum
+
+# Build output and local tool state
+/errpath
+dist/
+.claude/
