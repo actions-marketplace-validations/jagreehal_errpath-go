@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>errpath for Go: step through a function's error paths</title>
+<meta name="description" content="Click through the error paths errpath draws for a Go function, before and after a pull request, as a flowchart and as a state machine.">
+<script src="https://cdn.jsdelivr.net/npm/mermaid-flow-player@2.2.0/mermaid-flow-player.element.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/autovisualizer@0.9.0/public/embed/embed.js"></script>
+<style>
+  :root { color-scheme: light dark; --fg: #1f2328; --muted: #59636e; --bg: #fff; --rule: #d1d9e0; --code: #f6f8fa; }
+  @media (prefers-color-scheme: dark) { :root { --fg: #f0f6fc; --muted: #9198a1; --bg: #0d1117; --rule: #3d444d; --code: #151b23; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; }
+  h2 { font-size: 1.25rem; margin: 48px 0 8px; padding-top: 24px; border-top: 1px solid var(--rule); }
+  h3 { font-size: 1rem; margin: 24px 0 4px; }
+  p { margin: 0 0 12px; max-width: 70ch; }
+  .lede { color: var(--muted); font-size: 1.1rem; }
+  code { font: 0.9em ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--code); padding: 0.15em 0.35em; border-radius: 4px; }
+  pre { background: var(--code); padding: 12px 16px; border-radius: 6px; overflow-x: auto; }
+  pre code { background: none; padding: 0; }
+  mermaid-flow-player { display: block; margin: 16px 0 8px; overflow-x: auto; }
+  auto-visualizer { display: block; margin: 16px 0 8px; }
+  .hint { color: var(--muted); font-size: 0.9rem; }
+  a { color: #0969da; }
+  @media (prefers-color-scheme: dark) { a { color: #4493f8; } }
+  footer { margin-top: 48px; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>errpath for Go</h1>
+  <p class="lede">Step through the error paths <code>errpath</code> finds in a Go function, two ways: as a flowchart where you choose each step, and as a state machine you can send events to. On a phone, tap the expand button to view a chart full screen.</p>
+
+  <h2>Before: <code>PlaceOrder</code></h2>
+  <p>Each call whose error is checked and returned is a step with two ways out: <code>ok</code> carries on, <code>err</code> leaves with the error it returns. Follow a path to <code>CardDeclined</code>, or all the way to Success.</p>
+
+  <h3>Flowchart</h3>
+  <p class="hint">Start at the top, then click a highlighted step to choose where the function goes next.</p>
+<mermaid-flow-player mode="interactive" controls>
+flowchart LR
+  Start(["PlaceOrder"])
+  Done((Success))
+  S1["SendConfirmation"]
+  S1 --&gt;|ok| Done
+  E2[/"EmailError"/]
+  S1 --&gt;|err| E2
+  S3["SaveOrder"]
+  S3 --&gt;|ok| S1
+  E4[/"DbError"/]
+  S3 --&gt;|err| E4
+  S5["Charge"]
+  S5 --&gt;|ok| S3
+  E6[/"CardDeclined"/]
+  S5 --&gt;|err| E6
+  D7{"if cart.HasCoupon"}
+  S8["ValidateCoupon"]
+  S8 --&gt;|ok| S5
+  E9[/"CouponError"/]
+  S8 --&gt;|err| E9
+  D7 --&gt;|yes| S8
+  D7 --&gt;|no| S5
+  S10["Price"]
+  S10 --&gt;|ok| D7
+  E11[/"PriceError"/]
+  S10 --&gt;|err| E11
+  Start --&gt; S10
+  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e
+  class E11,E2,E4,E6,E9 error
+</mermaid-flow-player>
+  <p class="hint">From <code>errpath diagram ./examples/checkout PlaceOrder</code>.</p>
+
+  <h3>State machine</h3>
+  <p class="hint">Send <code>ok</code> or <code>err</code> from each state, or pick <code>yes</code> or <code>no</code> at the coupon check. Error states are final.</p>
+  <auto-visualizer definition="#place-order-before"></auto-visualizer>
+  <script type="application/json" id="place-order-before">{"id": "PlaceOrder", "initial": "Price", "states": {"CardDeclined": {"type": "final", "tags": ["error"]}, "Charge": {"on": {"err": {"target": "CardDeclined"}, "ok": {"target": "SaveOrder"}}}, "CouponError": {"type": "final", "tags": ["error"]}, "DbError": {"type": "final", "tags": ["error"]}, "EmailError": {"type": "final", "tags": ["error"]}, "Price": {"on": {"err": {"target": "PriceError"}, "ok": {"target": "branch"}}}, "PriceError": {"type": "final", "tags": ["error"]}, "SaveOrder": {"on": {"err": {"target": "DbError"}, "ok": {"target": "SendConfirmation"}}}, "SendConfirmation": {"on": {"err": {"target": "EmailError"}, "ok": {"target": "Success"}}}, "Success": {"type": "final"}, "ValidateCoupon": {"on": {"err": {"target": "CouponError"}, "ok": {"target": "Charge"}}}, "branch": {"description": "if cart.HasCoupon", "on": {"no": {"target": "Charge"}, "yes": {"target": "ValidateCoupon"}}}}}</script>
+  <p class="hint">From <code>errpath machine ./examples/checkout PlaceOrder</code>. Open the same JSON file in <a href="https://auto-visualizer.vercel.app">autovisualizer</a> to keep exploring.</p>
+
+  <h2>After a one-line pull request</h2>
+  <p>The PR stops checking the confirmation email's error:</p>
+<pre><code>-	if err := SendConfirmation(receipt); err != nil {
+-		return Receipt{}, err
+-	}
++	_ = SendConfirmation(receipt)</code></pre>
+  <p>Take the <code>ok</code> path past <code>SaveOrder</code> and watch a failed email reach Success without a trace. <code>EmailError</code> is gone.</p>
+
+  <h3>Flowchart</h3>
+<mermaid-flow-player mode="interactive" controls>
+flowchart LR
+  Start(["PlaceOrder"])
+  Done((Success))
+  W1["swallow SendConfirmation"]
+  W1 --&gt; Done
+  S2["SaveOrder"]
+  S2 --&gt;|ok| W1
+  E3[/"DbError"/]
+  S2 --&gt;|err| E3
+  S4["Charge"]
+  S4 --&gt;|ok| S2
+  E5[/"CardDeclined"/]
+  S4 --&gt;|err| E5
+  D6{"if cart.HasCoupon"}
+  S7["ValidateCoupon"]
+  S7 --&gt;|ok| S4
+  E8[/"CouponError"/]
+  S7 --&gt;|err| E8
+  D6 --&gt;|yes| S7
+  D6 --&gt;|no| S4
+  S9["Price"]
+  S9 --&gt;|ok| D6
+  E10[/"PriceError"/]
+  S9 --&gt;|err| E10
+  Start --&gt; S9
+  classDef error fill:#fdecea,stroke:#d93025,color:#a50e0e
+  class E10,E3,E5,E8 error
+</mermaid-flow-player>
+  <p class="hint"><code>errpath review</code> posts this diagram on the pull request, with the new <code>no-swallow</code> finding above it.</p>
+
+  <h3>State machine, compared with before</h3>
+  <p class="hint">States and transitions the PR added are green; removed ones are dashed and red.</p>
+  <auto-visualizer definition="#place-order-after" base="#place-order-before"></auto-visualizer>
+  <script type="application/json" id="place-order-after">{"id": "PlaceOrder", "initial": "Price", "states": {"CardDeclined": {"type": "final", "tags": ["error"]}, "Charge": {"on": {"err": {"target": "CardDeclined"}, "ok": {"target": "SaveOrder"}}}, "CouponError": {"type": "final", "tags": ["error"]}, "DbError": {"type": "final", "tags": ["error"]}, "Price": {"on": {"err": {"target": "PriceError"}, "ok": {"target": "branch"}}}, "PriceError": {"type": "final", "tags": ["error"]}, "SaveOrder": {"on": {"err": {"target": "DbError"}, "ok": {"target": "swallow_SendConfirmation"}}}, "Success": {"type": "final"}, "ValidateCoupon": {"on": {"err": {"target": "CouponError"}, "ok": {"target": "Charge"}}}, "branch": {"description": "if cart.HasCoupon", "on": {"no": {"target": "Charge"}, "yes": {"target": "ValidateCoupon"}}}, "swallow_SendConfirmation": {"description": "swallowed (_ =)", "on": {"ok": {"target": "Success"}}}}}</script>
+
+  <footer>
+    <p><a href="https://github.com/jagreehal/errpath-go">errpath for Go on GitHub</a> · <code>go install github.com/jagreehal/errpath-go/cmd/errpath@latest</code></p>
+  </footer>
+</main>
+</body>
+</html>

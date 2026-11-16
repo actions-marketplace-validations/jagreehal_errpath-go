@@ -11,6 +11,8 @@ errpath lets you:
 
 It reads source, so there's nothing to build or configure.
 
+[Step through a function's error paths yourself](https://jagreehal.github.io/errpath-go/), before and after a pull request.
+
 ```bash
 go install github.com/jagreehal/errpath-go/cmd/errpath@latest
 ```
@@ -103,7 +105,22 @@ flowchart LR
 
 Each call whose error is checked and returned is a step. Every red box is a way `PlaceOrder` can fail, and the coupon check only happens on one branch.
 
-For an interactive version, `errpath machine ./examples/checkout PlaceOrder` prints an [XState](https://stately.ai/docs/xstate) state machine you can open in [autovisualizer](https://auto-visualizer.vercel.app).
+### Step through it
+
+`errpath machine` prints the same paths as an [XState](https://stately.ai/docs/xstate) state machine, so you can click through them:
+
+```bash
+errpath machine ./examples/checkout PlaceOrder -o PlaceOrder.json
+```
+
+Open `PlaceOrder.json` in [autovisualizer](https://auto-visualizer.vercel.app) and send `ok` or `err` from each step to walk a path. To put it on your own page, embed it with no build step:
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/npm/autovisualizer/public/embed/embed.js"></script>
+<auto-visualizer src="PlaceOrder.json"></auto-visualizer>
+```
+
+Put the machine from before a change in `base`, as the JSON or the `#id` of a `<script type="application/json">` holding it, and the chart marks what the change added and removed. [This page](https://jagreehal.github.io/errpath-go/) shows `PlaceOrder` both ways, as a flowchart you click through and as a state machine, before and after a pull request.
 
 ### Naming the errors
 
