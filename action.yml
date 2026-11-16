@@ -1,7 +1,5 @@
 name: 'errpath review'
-description: >-
-  Reviews how a pull request changes error propagation, recovery and panic paths
-  in Go, as one sticky PR comment, inline annotations and the job summary.
+description: 'Reviews Go pull requests for new panics, dropped errors, untraced errors and changed error paths.'
 author: 'Jag Reehal'
 branding:
   icon: 'git-pull-request'

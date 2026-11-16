@@ -188,7 +188,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: jagreehal/errpath-go@v0.1.0
+      - uses: jagreehal/errpath-go@v0.1.1
         with:
           fail-on: high # never, moderate or high
 ```
